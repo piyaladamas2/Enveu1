@@ -2,6 +2,8 @@ package com.piyal.enveuproject.Service;
 
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 
+import com.piyal.enveuproject.Dto.LoginRequest;
+import com.piyal.enveuproject.Dto.LoginResponse;
 import com.piyal.enveuproject.Dto.RegisterRequest;
 import com.piyal.enveuproject.Dto.RegisterResponse;
 import com.piyal.enveuproject.Entity.Role;
@@ -17,6 +19,10 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public RegisterResponse register(RegisterRequest request) {
+
+    if(userRepository.findByEmail(request.getEmail())){
+      throw new RuntimeException("Email Already registered");
+    }
     
     // check if SUPER_USER exists
     boolean superAdminExists= userRepository.existsByRoles_Name("ROLE_SUPER_ADMIN");
@@ -47,6 +53,11 @@ public class AuthServiceImpl implements AuthService {
       savedUser.getLastName();
       savedUser.getRoles().stream().map(Role::getName).toList();
     );
+  }
+
+  @Override
+  public LoginResponse login(LoginRequest login) {
+
   }
 
 }
